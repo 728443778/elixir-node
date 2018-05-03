@@ -7,10 +7,9 @@ defmodule Aecore.Naming.Tx.NameClaimTx do
 
   alias Aecore.Chain.ChainState
   alias Aecore.Naming.Tx.NameClaimTx
-  alias Aecore.Naming.Naming
-  alias Aecore.Account.Account
+  alias Aecore.Naming.{Naming, NamingStateTree}
+  alias Aecore.Account.{Account, AccountStateTree}
   alias Aecore.Naming.NameUtil
-  alias Aecore.Account.AccountStateTree
 
   require Logger
 
@@ -105,8 +104,8 @@ defmodule Aecore.Naming.Tx.NameClaimTx do
 
     updated_naming_chainstate =
       naming_state
-      |> Map.delete(pre_claim_commitment)
-      |> Map.put(claim_hash, claim)
+      |> NamingStateTree.delete(pre_claim_commitment)
+      |> NamingStateTree.put(claim_hash, claim)
 
     {updated_accounts_chainstate, updated_naming_chainstate}
   end
@@ -126,7 +125,7 @@ defmodule Aecore.Naming.Tx.NameClaimTx do
         ) :: :ok | {:error, String.t()}
   def preprocess_check(tx, sender, account_state, fee, _nonce, _block_height, naming_state) do
     {:ok, pre_claim_commitment} = Naming.create_commitment_hash(tx.name, tx.name_salt)
-    pre_claim = Map.get(naming_state, pre_claim_commitment)
+    pre_claim = NamingStateTree.get(naming_state, pre_claim_commitment)
 
     {:ok, claim_hash} = NameUtil.normalized_namehash(tx.name)
     claim = Map.get(naming_state, claim_hash)

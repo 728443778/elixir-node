@@ -4,23 +4,23 @@ defmodule Aecore.Chain.Chainstate do
   The chain state is a map, telling us what amount of tokens each account has.
   """
 
-  alias Aecore.Tx.SignedTx
-  alias Aecore.Tx.DataTx
+  alias Aecore.Chain.Chainstate
   alias Aecore.Account.Account
   alias Aecore.Account.AccountStateTree
-  alias Aecore.Chain.Chainstate
-  alias Aeutil.Bits
-  alias Aecore.Oracle.Oracle
   alias Aecore.Account.Tx.SpendTx
+  alias Aecore.Oracle.Oracle
   alias Aecore.Oracle.OracleStateTree
-  alias Aecore.Naming.Naming
+  alias Aecore.Naming.NamingStateTree
+  alias Aecore.Tx.SignedTx
+  alias Aecore.Tx.DataTx
+  alias Aeutil.Bits
 
   require Logger
 
   @type t :: %Chainstate{
           accounts: AccountStateTree.accounts_state(),
           oracles: OracleStateTree.oracles_state(),
-          naming: Naming.state()
+          naming: NamingStateTree.namings_state()
         }
 
   defstruct [
@@ -34,7 +34,7 @@ defmodule Aecore.Chain.Chainstate do
     %Chainstate{
       :accounts => AccountStateTree.init_empty(),
       :oracles => OracleStateTree.init_empty(),
-      :naming => Naming.init_empty()
+      :naming => NamingStateTree.init_empty()
     }
   end
 

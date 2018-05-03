@@ -670,6 +670,9 @@ defmodule Aecore.Chain.Worker do
       {key = :oracles, root_hash}, acc_state ->
         Map.put(acc_state, key, PatriciaMerkleTree.new(key, root_hash))
 
+      {key = :naming, root_hash}, acc_state ->
+        Map.put(acc_state, key, PatriciaMerkleTree.new(key, root_hash))
+
       {key, value}, acc_state ->
         Map.put(acc_state, key, value)
     end
@@ -681,6 +684,9 @@ defmodule Aecore.Chain.Worker do
         Map.put(acc_state, key, value.root_hash)
 
       {key = :oracles, value}, acc_state ->
+        Map.put(acc_state, key, value.root_hash)
+
+      {key = :naming, value}, acc_state ->
         Map.put(acc_state, key, value.root_hash)
 
       {key, value}, acc_state ->

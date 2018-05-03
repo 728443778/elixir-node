@@ -7,10 +7,9 @@ defmodule Aecore.Naming.Tx.NamePreClaimTx do
 
   alias Aecore.Chain.ChainState
   alias Aecore.Naming.Tx.NamePreClaimTx
-  alias Aecore.Naming.Naming
+  alias Aecore.Naming.{Naming, NamingStateTree}
   alias Aeutil.Hash
-  alias Aecore.Account.Account
-  alias Aecore.Account.AccountStateTree
+  alias Aecore.Account.{Account, AccountStateTree}
 
   require Logger
 
@@ -94,7 +93,7 @@ defmodule Aecore.Naming.Tx.NamePreClaimTx do
 
     commitment = Naming.create_commitment(tx.commitment, sender, block_height, commitment_expires)
 
-    updated_naming_chainstate = Map.put(naming_state, tx.commitment, commitment)
+    updated_naming_chainstate = NamingStateTree.put(naming_state, tx.commitment, commitment)
 
     {updated_accounts_chainstate, updated_naming_chainstate}
   end

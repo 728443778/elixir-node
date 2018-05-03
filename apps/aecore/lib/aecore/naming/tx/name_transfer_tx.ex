@@ -7,11 +7,10 @@ defmodule Aecore.Naming.Tx.NameTransferTx do
 
   alias Aecore.Chain.ChainState
   alias Aecore.Naming.Tx.NameTransferTx
-  alias Aecore.Naming.Naming
+  alias Aecore.Naming.{Naming, NamingStateTree}
   alias Aeutil.Hash
-  alias Aecore.Account.Account
+  alias Aecore.Account.{Account, AccountStateTree}
   alias Aecore.Wallet.Worker, as: Wallet
-  alias Aecore.Account.AccountStateTree
 
   require Logger
 
@@ -97,9 +96,9 @@ defmodule Aecore.Naming.Tx.NameTransferTx do
 
     updated_accounts_chainstate = AccountStateTree.put(accounts, sender, new_senderount_state)
 
-    claim_to_update = Map.get(naming_state, tx.hash)
+    claim_to_update = NamingStateTree.get(naming_state, tx.hash)
     claim = %{claim_to_update | owner: tx.target}
-    updated_naming_chainstate = Map.put(naming_state, tx.hash, claim)
+    updated_naming_chainstate = NamingStateTree.put(naming_state, tx.hash, claim)
 
     {updated_accounts_chainstate, updated_naming_chainstate}
   end
@@ -118,7 +117,7 @@ defmodule Aecore.Naming.Tx.NameTransferTx do
           tx_type_state
         ) :: :ok | {:error, String.t()}
   def preprocess_check(tx, sender, account_state, fee, _nonce, _block_height, naming_state) do
-    claim = Map.get(naming_state, tx.hash)
+    claim = NamingStateTree.get(naming_state, tx.hash)
 
     cond do
       account_state.balance - fee < 0 ->
