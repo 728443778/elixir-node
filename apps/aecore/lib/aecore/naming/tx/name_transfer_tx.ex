@@ -123,7 +123,7 @@ defmodule Aecore.Naming.Tx.NameTransferTx do
       account_state.balance - fee < 0 ->
         {:error, "#{__MODULE__}: Negative balance: #{inspect(account_state.balance - fee)}"}
 
-      claim == nil ->
+      claim == :none ->
         {:error, "#{__MODULE__}: Name has not been claimed: #{inspect(claim)}"}
 
       claim.owner != sender ->

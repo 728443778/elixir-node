@@ -17,8 +17,10 @@ defmodule Aecore.Naming.NamingStateTree do
 
   @spec get(namings_state(), binary()) :: Naming.t()
   def get(trie, key) do
-    {:ok, value} = PatriciaMerkleTree.lookup(trie, key)
-    deserialize(value)
+    case PatriciaMerkleTree.lookup(trie, key) do
+      {:ok, value} -> deserialize(value)
+      _ -> :none
+    end
   end
 
   @spec delete(Trie.t(), binary()) :: Trie.t()

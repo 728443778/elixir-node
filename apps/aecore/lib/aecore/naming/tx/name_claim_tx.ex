@@ -128,13 +128,13 @@ defmodule Aecore.Naming.Tx.NameClaimTx do
     pre_claim = NamingStateTree.get(naming_state, pre_claim_commitment)
 
     {:ok, claim_hash} = NameUtil.normalized_namehash(tx.name)
-    claim = Map.get(naming_state, claim_hash)
+    claim = NamingStateTree.get(naming_state, claim_hash)
 
     cond do
       account_state.balance - fee < 0 ->
         {:error, "#{__MODULE__}: Negative balance: #{inspect(account_state.balance - fee)}"}
 
-      pre_claim == nil ->
+      pre_claim == :none ->
         {:error, "#{__MODULE__}: Name has not been pre-claimed: #{inspect(pre_claim)}"}
 
       pre_claim.owner != sender ->
@@ -143,7 +143,7 @@ defmodule Aecore.Naming.Tx.NameClaimTx do
            inspect(sender)
          }"}
 
-      claim != nil ->
+      claim != :none ->
         {:error, "#{__MODULE__}: Name has aleady been claimed: #{inspect(claim)}"}
 
       true ->
